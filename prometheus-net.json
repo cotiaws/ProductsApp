@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "ASP.NET Core API - Metrics",
+    "timezone": "browser",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Tempo de Resposta - HTTP",
+        "targets": [
+          {
+            "expr": "rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])",
+            "legendFormat": "avg duration",
+            "refId": "A"
+          }
+        ],
+        "id": 1
+      },
+      {
+        "type": "graph",
+        "title": "Quantidade de Requisi��es HTTP",
+        "targets": [
+          {
+            "expr": "rate(http_requests_received_total[1m])",
+            "legendFormat": "{{method}} {{code}}",
+            "refId": "B"
+          }
+        ],
+        "id": 2
+      },
+      {
+        "type": "stat",
+        "title": "Erros HTTP 5xx",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_received_total{code=~\"5..\"}[1m]))",
+            "refId": "C"
+          }
+        ],
+        "id": 3
+      },
+      {
+        "type": "stat",
+        "title": "Erros HTTP 4xx",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_received_total{code=~\"4..\"}[1m]))",
+            "refId": "D"
+          }
+        ],
+        "id": 4
+      },
+      {
+        "type": "stat",
+        "title": "Requisi��es Totais",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_received_total[1m]))",
+            "refId": "E"
+          }
+        ],
+        "id": 5
+      }
+    ],
+    "schemaVersion": 27,
+    "version": 1
+  },
+  "overwrite": false
+}

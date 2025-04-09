@@ -1,0 +1,52 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    container_name: sqlserver_container_productsapi
+    ports:
+      - "1435:1433"
+    environment:
+      SA_PASSWORD: "Coti@2025"
+      ACCEPT_EULA: "Y"
+    restart: always
+    networks:
+      - sql_network
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq_container_productsapi
+    ports:
+      - "5672:5672" 
+      - "15672:15672" 
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    restart: always
+    networks:
+      - sql_network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog_container_productsapi
+    ports:
+      - "1025:1025" 
+      - "8025:8025" 
+    restart: always
+    networks:
+      - sql_network
+
+  productsapp:
+    build:
+      context: .
+      dockerfile: ProductsApp.API/Dockerfile
+    container_name: productsapp_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - mailhog
+    networks:
+      - sql_network      
+
+networks:
+  sql_network:
